@@ -64,35 +64,7 @@ Private global variables and functions
 void ether_set_phy_mode(uint8_t connect)
 {
 #if (ETHER_CH0_EN == 1)
-    if (PORT_CONNECT_ET0 == (connect & PORT_CONNECT_ET0)) {
-    #if (ETHER_CFG_MODE_SEL == 0)
-        /* CH0 MII */
-        GPIO.PFENET.BIT.PHYMODE0 = 1;
-        pin_function(PE_5, 1); // ET0_MDC
-        pin_function(PE_6, 1); // ET0_MDIO
-        pin_function(PG_0, 1); // ET0_TXCLK
-        pin_function(PG_4, 1); // ET0_TXER
-        pin_function(P6_1, 1); // ET0_TXEN
-        pin_function(P6_2, 1); // ET0_TXD0
-        pin_function(P6_3, 1); // ET0_TXD1
-        pin_function(PG_1, 1); // ET0_TXD2
-        pin_function(PG_2, 1); // ET0_TXD3
-        pin_function(PE_0, 1); // ET0_RXCLK
-        pin_function(PE_3, 1); // ET0_RXER
-        pin_function(PG_5, 1); // ET0_RXDV
-        pin_function(PE_1, 1); // ET0_RXD0
-        pin_function(PE_2, 1); // ET0_RXD1
-        pin_function(PG_6, 1); // ET0_RXD2
-        pin_function(PG_7, 1); // ET0_RXD3
-        pin_function(PE_4, 1); // ET0_CRS
-        pin_function(PG_3, 1); // ET0_COL
-    #elif (ETHER_CFG_MODE_SEL == 1)
-        /* CH0 RMII */
-        GPIO.PFENET.BIT.PHYMODE0 = 0;
-        GPIO.PMODEPFS.BIT.ET0_EXOUT_SEL = 0;
-        #error "Not support in this board."
-    #endif
-    }
+#error "Not support in this board."
 #endif
 
 #if (ETHER_CH1_EN == 1)
