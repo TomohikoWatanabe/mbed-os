@@ -145,10 +145,10 @@ time_t rtc_read(void)
             RTC_BCNT1.RSR.BIT.CF = 0;
 
             // Read RTC register
-            t = (RTC_BCNT1.BCNT0.BYTE <<  0)
-              | (RTC_BCNT1.BCNT1.BYTE <<  8)
-              | (RTC_BCNT1.BCNT2.BYTE << 16)
-              | (RTC_BCNT1.BCNT3.BYTE << 24);
+            t = ((time_t)RTC_BCNT1.BCNT0.BYTE <<  0)
+              | ((time_t)RTC_BCNT1.BCNT1.BYTE <<  8)
+              | ((time_t)RTC_BCNT1.BCNT2.BYTE << 16)
+              | ((time_t)RTC_BCNT1.BCNT3.BYTE << 24);
         } while (RTC_BCNT1.RSR.BIT.CF != 0);
     } else {
         // Error
