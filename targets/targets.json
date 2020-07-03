@@ -4954,6 +4954,7 @@
             "USTICKER",
             "RTC",
             "ANALOGIN",
+            "ETHERNET",
             "I2C",
             "I2CSLAVE",
             "I2C_ASYNCH",
@@ -4968,14 +4969,15 @@
             "SPI",
             "SPISLAVE",
             "SPI_ASYNCH",
-            "STDIO_MESSAGES"
+            "STDIO_MESSAGES",
+            "USBDEVICE"
         ],
         "program_cycle_s": 2
     },
     "GR_MANGO": {
         "inherits": ["RZ_A2XX"],
         "extra_labels_add": ["RZA2M", "MBRZA2M", "RZ_A2_EMAC"],
-        "device_has_add": ["FLASH"],
+        "device_has_add": ["EMAC","FLASH"],
         "release_versions": ["2", "5"],
         "device_name": "R7S921053",
         "bootloader_supported": true,
