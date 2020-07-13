@@ -165,6 +165,8 @@ void USBPhyHw::init(USBPhyEvents *events)
 #else /*  (USB_FUNCTION_CH == 1) */
 #if defined(TARGET_GR_MANGO)
     pin_function(P2_2, 5); /* VBUSIN1 */
+    DigitalOut usb_sel(P2_0);
+    usb_sel = 1;
 #else
     pin_function(PC_0, 1); /* VBUSIN1 */
 #endif
@@ -187,9 +189,11 @@ void USBPhyHw::init(USBPhyEvents *events)
     USBX0.USBCTR.LONG = 0x00000000;
     cpu_delay_1us(100);                     /* 100us wait */
 
+#if (0)
     if (events != NULL) {
         sleep_manager_unlock_deep_sleep();
     }
+#endif
     events = NULL;
 }
 

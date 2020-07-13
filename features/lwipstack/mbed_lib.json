@@ -184,6 +184,16 @@
             "pbuf-pool-size": 16,
             "mem-size": 51200
         },
+        "RZ_A2_EMAC": {
+            "tcpip-thread-stacksize": 1328,
+            "default-thread-stacksize": 640,
+            "memp-num-tcp-seg": 32,
+            "tcp-mss": 1440,
+            "tcp-snd-buf": "(8 * TCP_MSS)",
+            "tcp-wnd": "(TCP_MSS * 8)",
+            "pbuf-pool-size": 16,
+            "mem-size": 51200
+        },
         "MCU_PSOC6": {
             "tcpip-thread-stacksize": 8192,
             "default-thread-stacksize": 640,

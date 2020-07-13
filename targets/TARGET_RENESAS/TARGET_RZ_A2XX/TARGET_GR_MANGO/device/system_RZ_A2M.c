@@ -305,18 +305,6 @@ void SystemInit (void)
     // Enable MMU
     MMU_Enable();
 
-#if (__L2C_PRESENT == 1) 
-    /* Initial setting of the level 2 cache */
-    R_CACHE_L2Init();
-
-    /* DRP L2 Cache ON */
-    PRR.AXIBUSCTL4.BIT.DRPARCACHE = 0xF;
-    PRR.AXIBUSCTL4.BIT.DRPAWCACHE = 0xF; 
-#endif
-
-    /* Initial setting of the level 1 cache */
-    R_CACHE_L1Init();
-
     // IRQ Initialize
     IRQ_Initialize();
 
@@ -347,6 +335,19 @@ void mbed_sdk_init(void) {
 #if(1) /******* Provisional (Remove this process when the bootloader is complete) ****** */
     OctaFlash_Init();
 #endif
+
+    /* Initial setting of the level 1 cache */
+    R_CACHE_L1Init();
+
+#if (__L2C_PRESENT == 1) 
+    /* Initial setting of the level 2 cache */
+    R_CACHE_L2Init();
+
+    /* DRP L2 Cache ON */
+    PRR.AXIBUSCTL4.BIT.DRPARCACHE = 0xF;
+    PRR.AXIBUSCTL4.BIT.DRPAWCACHE = 0xF; 
+#endif
+
 }
 
 void soft_reset(void) {

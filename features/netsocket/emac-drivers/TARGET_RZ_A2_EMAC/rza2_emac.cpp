@@ -25,7 +25,13 @@
 // Weak so a module can override
 MBED_WEAK EMAC &EMAC::get_default_instance()
 {
+#if (ETHER_CH0_EN == 1)
     return RZ_A2_EMAC::get_instance(ETHER_CHANNEL_0);
+#elif (ETHER_CH1_EN == 1)
+    return RZ_A2_EMAC::get_instance(ETHER_CHANNEL_1);
+#else
+#error "Set ETHER_CH0_EN or ETHER_CH1_EN to 1."
+#endif
 }
 
 RZ_A2_EMAC &RZ_A2_EMAC::get_instance(uint32_t channel)

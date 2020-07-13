@@ -140,7 +140,7 @@ void OctaFlash_Init(void)
 
     /* ---- Device Memory Map Read chip select timing setting register ---- */
     OCTA.DRCSTR.BIT.DVRDLO0  = 0;
-    OCTA.DRCSTR.BIT.DVRDHI0  = 2;
+    OCTA.DRCSTR.BIT.DVRDHI0  = 5;
     OCTA.DRCSTR.BIT.DVRDCMD0 = 1;
     OCTA.DRCSTR.BIT.CTR0     = 0;
     OCTA.DRCSTR.BIT.CTRW0    = 0x20;
@@ -224,7 +224,7 @@ void OctaRAM_Init(void)
     dummy8 = CPG.STBCR9.BYTE;
     (void)dummy8;
 
-#if(1) /******* Provisional (Remove this process when the bootloader is complete) ****** */
+#if(0) /******* Provisional (Remove this process when the bootloader is complete) ****** */
     CPG.SCLKSEL.BIT.OCTCR = 2;           // Octa clock B
 #endif
 
