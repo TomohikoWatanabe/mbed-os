@@ -224,7 +224,7 @@ void OctaRAM_Init(void)
     dummy8 = CPG.STBCR9.BYTE;
     (void)dummy8;
 
-#if(0) /******* Provisional (Remove this process when the bootloader is complete) ****** */
+#if(1) /******* Provisional (Remove this process when the bootloader is complete) ****** */
     CPG.SCLKSEL.BIT.OCTCR = 2;           // Octa clock B
 #endif
 

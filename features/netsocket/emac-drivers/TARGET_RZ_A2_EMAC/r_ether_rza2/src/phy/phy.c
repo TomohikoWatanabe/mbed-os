@@ -128,6 +128,7 @@ static void phy_trans_1to0 (uint32_t ether_channel);
 static void phy_mii_write1 (uint32_t ether_channel);
 static void phy_mii_write0 (uint32_t ether_channel);
 static int16_t phy_get_pir_address (uint32_t ether_channel, volatile uint32_t ** pppir_addr);
+static uint32_t phy_get_ctrl_tbl_idx (uint32_t ether_channel);
 
 static uint16_t local_advertise[ETHER_CHANNEL_MAX]; /* the capabilities of the local link as PHY data */
 
@@ -176,7 +177,6 @@ int16_t phy_init (uint32_t ether_channel)
 
         return R_PHY_OK;
     }
-
     return R_PHY_ERROR;
 } /* End of function phy_init() */
 
@@ -192,11 +192,12 @@ int16_t phy_init (uint32_t ether_channel)
 void phy_start_autonegotiate (uint32_t ether_channel, uint8_t pause)
 {
     volatile uint16_t reg = 0;
+    uint32_t ether_channel_index = phy_get_ctrl_tbl_idx(ether_channel);
 
     /* Set local ability */
     /* When pause frame is not used */
     if (ETHER_FLAG_OFF == pause) {
-        local_advertise[ether_channel] = ((((PHY_AN_ADVERTISEMENT_100F |
+        local_advertise[ether_channel_index] = ((((PHY_AN_ADVERTISEMENT_100F |
         PHY_AN_ADVERTISEMENT_100H) |
         PHY_AN_ADVERTISEMENT_10F) |
         PHY_AN_ADVERTISEMENT_10H) |
@@ -206,7 +207,7 @@ void phy_start_autonegotiate (uint32_t ether_channel, uint8_t pause)
 
     /* When pause frame is used */
     else {
-        local_advertise[ether_channel] = ((((((PHY_AN_ADVERTISEMENT_ASM_DIR |
+        local_advertise[ether_channel_index] = ((((((PHY_AN_ADVERTISEMENT_ASM_DIR |
         PHY_AN_ADVERTISEMENT_PAUSE) |
         PHY_AN_ADVERTISEMENT_100F) |
         PHY_AN_ADVERTISEMENT_100H) |
@@ -216,7 +217,7 @@ void phy_start_autonegotiate (uint32_t ether_channel, uint8_t pause)
     }
 
     /* Configure what the PHY and the Ethernet controller on this board supports */
-    phy_write(ether_channel, PHY_REG_AN_ADVERTISEMENT, local_advertise[ether_channel]);
+    phy_write(ether_channel, PHY_REG_AN_ADVERTISEMENT, local_advertise[ether_channel_index]);
     phy_write(ether_channel, PHY_REG_CONTROL, (PHY_CONTROL_AN_ENABLE |
     PHY_CONTROL_AN_RESTART));
 
@@ -247,6 +248,7 @@ int16_t phy_set_autonegotiate (uint32_t ether_channel, uint16_t *pline_speed_dup
         uint16_t *ppartner_pause)
 {
     uint16_t reg;
+    uint32_t ether_channel_index = phy_get_ctrl_tbl_idx(ether_channel);
 
     /* Because reading the first time shows the previous state, the Link status bit is read twice. */
     reg = phy_read(ether_channel, PHY_REG_STATUS);
@@ -258,11 +260,11 @@ int16_t phy_set_autonegotiate (uint32_t ether_channel, uint16_t *pline_speed_dup
     }
 
     /* Establish local pause capability */
-    if (PHY_AN_ADVERTISEMENT_PAUSE == (local_advertise[ether_channel] & PHY_AN_ADVERTISEMENT_PAUSE)) {
+    if (PHY_AN_ADVERTISEMENT_PAUSE == (local_advertise[ether_channel_index] & PHY_AN_ADVERTISEMENT_PAUSE)) {
         (*plocal_pause) |= (1 << 1);
     }
 
-    if (PHY_AN_ADVERTISEMENT_ASM_DIR == (local_advertise[ether_channel] & PHY_AN_ADVERTISEMENT_ASM_DIR)) {
+    if (PHY_AN_ADVERTISEMENT_ASM_DIR == (local_advertise[ether_channel_index] & PHY_AN_ADVERTISEMENT_ASM_DIR)) {
         (*plocal_pause) |= 1;
     }
 
@@ -427,6 +429,7 @@ static void phy_reg_set (uint32_t ether_channel, uint16_t reg_addr, int32_t opti
 {
     int32_t i;
     uint16_t data;
+    uint32_t ether_channel_index = phy_get_ctrl_tbl_idx(ether_channel);
 
     /*
      * The processing of ST (start of frame),OP (operation code), PHYAD (PHY Address), and
@@ -442,7 +445,7 @@ static void phy_reg_set (uint32_t ether_channel, uint16_t reg_addr, int32_t opti
         data |= (PHY_MII_WRITE << 12); /* OP code(WT)  */
     }
 
-    data |= (uint16_t) (g_eth_control_ch[ether_channel].phy_address << 7); /* PHY Address  */
+    data |= (uint16_t) (g_eth_control_ch[ether_channel_index].phy_address << 7); /* PHY Address  */
 
     data |= (reg_addr << 2); /* Reg Address  */
 
@@ -693,14 +696,27 @@ static void phy_mii_write0 (uint32_t ether_channel)
 static int16_t phy_get_pir_address (uint32_t ether_channel, volatile uint32_t ** pppir_addr)
 {
     volatile uint32_t * petherc_pir;
+    uint32_t ether_channel_index = phy_get_ctrl_tbl_idx(ether_channel);
 
-    if (ETHER_CHANNEL_MAX <= ether_channel) {
-        return R_PHY_ERROR;
-    }
-
-    petherc_pir = g_eth_control_ch[ether_channel].preg_pir;
+    petherc_pir = g_eth_control_ch[ether_channel_index].preg_pir;
 
     (*pppir_addr) = petherc_pir;
 
     return R_PHY_OK;
 } /* End of function phy_get_pir_address() */
+
+/***********************************************************************************************************************
+ * Function Name: phy_get_ctrl_tbl_idx
+ * Description  : get index of control table.
+ * Arguments    : ether_channel -
+ *                    Ethernet channel number
+ * Return Value : Index of control table
+ ***********************************************************************************************************************/
+static uint32_t phy_get_ctrl_tbl_idx (uint32_t ether_channel)
+{
+#if (ETHER_CHANNEL_MAX == 1)
+    return 0;
+#else
+    return ether_channel;
+#endif
+} /* End of function phy_get_ctrl_tbl_idx() */
